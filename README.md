@@ -13,3 +13,4 @@ Made during a Hired.com hackathon.
 - Javascript cleanup
     Right now each page has scripts baked into their respective views. This isn't ideal.
 - Make leaderboards look better/more scalable
+- Gender rules (plus pets)
