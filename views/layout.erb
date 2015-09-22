@@ -1,0 +1,79 @@
+<html>
+  
+<link rel="stylesheet" href="/styles/styles.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700,800,600,300italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" sizes="57x57" href="/fav/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/fav/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/fav/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/fav/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/fav/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/fav/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/fav/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/fav/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/fav/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/fav/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/fav/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.2.7/firebase.js"></script>
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<title>Who Dat?</title>
+
+<body>
+  
+  <div id="notices">
+    <i class="fa fa-trophy"></i> <a href="/leaderboards">Someone just scored over 9000!</a>
+  </div>
+  <div class="logo-container">
+    <!--<a href="/"><img class="logo" alt="Who's That?" src="images/whos_logo_new.png" /></a>-->
+    <a href="/"><h1 class="logo">who <strong>dat</strong>?</h1></a>
+  </div>
+   <div class="container">
+     <%= yield %>
+   </div>
+   
+   
+   <div class="ct footer"><a href="/">Home</a> - <a href="/results">Leaderboard</a> - <a href="/about">About</a></div>
+</body>
+
+
+<script>
+  if (fbRoot === undefined) var fbRoot = new Firebase("https://faces.firebaseio.com/");
+  
+  //Listener for results
+  fbRoot.child('hired').child('results').limitToLast(1).on("child_added", function(snapChild) {
+    setNotice(buildTrophyMessage(snapChild.val()), "trophy");
+  }, function (errorObject) {
+    console.log("The read failed: " + errorObject.code);
+  });
+  
+  //Construct Trophy Message for Notice bar from fb object result
+  var buildTrophyMessage = function(messageObj){
+    return messageObj.name + " just scored " + messageObj.score + "!"
+  }
+  
+  //Set notice and display it
+  var setNotice = function(message, icon){
+    $notices = $('#notices');
+    if (icon) {
+      $notices.html("<i class='fa fa-" + icon + "'></i>&nbsp;&nbsp;" + message);
+    } else {
+      $notices.text(message);
+    }
+    $('#notices').slideDown('500').delay('2000').slideUp('500');
+  }
+  
+</script>
+
+</html>

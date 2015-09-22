@@ -1,0 +1,62 @@
+
+<div id="toon-faces">
+  <div class="toon-face">
+    <img src="images/toon/1.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/2.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/3.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/4.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/5.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/6.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/7.png" />
+  </div>
+  <div class="toon-face">
+    <img src="images/toon/8.png" />
+  </div>
+</div>
+
+<div class="ct" id="whois-form">
+  
+  <form action="/play">
+    <h1><strong>Who is you?</strong></h1>
+    <input type="text" name="name" id="whois-name" value=""><br>
+    <button type="submit" id="play-go">Play</button>
+  </form>
+  
+</div>
+
+
+<script>
+  if (fbRoot === undefined) var fbRoot = new Firebase("https://faces.firebaseio.com/");
+
+  $('#toon-faces').children().first().fadeIn(200).delay(2000).fadeOut(200);
+  setInterval(function () {
+    $($('#toon-faces').children()[Math.floor((Math.random() * $('#toon-faces').children().length))]).fadeIn(250).delay(2500).fadeOut(250);
+  }, 3000);
+  
+  var names = <%= @employees %>;
+  
+  $('#whois-name').autocomplete({
+    source: names,
+    minLength: 2
+  });
+  
+  $('#play-go').on('click', function(){
+    if (names.indexOf($('#whois-name').val()) == -1) {
+      event.preventDefault();
+      setNotice("That name isn't in this organization", "exclamation-circle");
+    }
+  });
+  
+</script>

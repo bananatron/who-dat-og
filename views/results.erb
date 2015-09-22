@@ -1,0 +1,72 @@
+<div class="ct loader" style="font-size:2rem; margin-top:2rem;"><i class="fa fa-spin fa-refresh"></i></div>
+
+<div class="results-table-head">
+  <div class="results-row">
+    <div class="results-cell table-heading">
+      Name
+    </div>
+    <div class="results-cell table-heading">
+      Score
+    </div>
+    <div class="results-cell table-heading">
+      Time
+    </div>
+  </div>
+</div>
+
+<div class="results-table">
+  <!-- Sample goodies -->
+  <!--<div class="results-row">-->
+  <!--  <div class="results-cell">-->
+  <!--      Spenser Coke-->
+  <!--  </div>-->
+  <!--  <div class="results-cell">-->
+  <!--    200-->
+  <!--  </div>-->
+  <!--  <div class="results-cell">-->
+  <!--    3:00 PM 10/10/1980-->
+  <!--  </div>-->
+  <!--</div>-->
+</div>
+
+
+
+<script>
+  
+  // This page should likely be paginated or query/limited or something but I'm 
+  // curious how many entries one bucket can hold on fb and how it effects 
+  // load time in the wild
+  
+  if (fbRoot === undefined) var fbRoot = new Firebase("https://faces.firebaseio.com/");
+  fbRoot.child('hired').child('results').on("child_added", function(snapChild) {
+    buildRow(snapChild.val().name, snapChild.val().score, snapChild.val().create_at);
+    $('.loader').remove();
+    
+  }, function (errorObject) {
+    setNotice("The read failed: " + errorObject.code);
+  });
+  
+  
+  //Build out row w/ info and append it to table
+  var buildRow = function buildRow(name, score, time){
+  
+    var row = this.view = document.createElement("div");
+    row.setAttribute('class', 'results-row');
+    row.setAttribute('style', "order:" + score )
+    
+    var cell = row.appendChild(document.createElement("div"));
+    cell.setAttribute('class', 'results-cell');
+    cell.innerHTML = name;
+    
+    var cell = row.appendChild(document.createElement("div"));
+    cell.setAttribute('class', 'results-cell');
+    cell.innerHTML = score;
+    
+    var cell = row.appendChild(document.createElement("div"));
+    cell.setAttribute('class', 'results-cell');
+    cell.innerHTML = new Date(time).toDateString();
+    
+    $(row).appendTo('.results-table');
+  }
+  
+</script>

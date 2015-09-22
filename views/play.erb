@@ -1,0 +1,138 @@
+<div class="score-container">
+  <div id="score">0</div>
+</div>
+
+<div id="answer-flash">CORRECT!</div>
+
+<div class="play-container">
+  
+  <div id="complete-odd" class="complete-container">
+  </div>
+  
+  <div class="current-container">
+    <% @questions.each_with_index do |employee, ii| -%>
+      <div class="question-container">
+        <div class='who-photo'>
+          <img src="<%= employee['image'] -%>" />
+        </div>
+        
+        <div class="who-options" data-qn="<%= ii %>" data-in="<%= employee['index'] %>" >
+          <% employee['options'].each do |opt_name| %>
+            <div class='who-option' data-name='<%= opt_name %>'><%= opt_name.strip %></div>
+          <% end %>
+        </div>
+      </div>
+    
+    <% end %>
+  </div>
+  
+  <div id="complete-even" class="complete-container">
+  </div>
+  
+</div>
+
+
+<div class='final-score-text' id="finalscore">
+  <b><span id="final-score-congrats">Bummer.</span></b><br><br>Your final score is
+  <span id="final-score-number">0</span><br>
+  <button id="try-again" style="margin-top:2rem;">Try Again</button>
+</div>
+
+
+
+<script>
+
+var playerName = "<%= @name.gsub('+', ' ') %>";
+
+var score = 0;
+var uiEnabled = true;
+
+$('.who-option').on('click', function(){
+  if (uiEnabled == true){
+  uiEnabled = false; //Disable event while resolving
+  $this = $(this);
+  $thisParent = $(this).closest('.question-container')
+  $('#score').html('<i class="fa fa-spin fa-refresh"></i>')
+
+  var iin = $this.parent().data().in;
+    fbRoot.child("hired").child("employees").child(iin).once('value', function (snap){
+      var correctName = snap.val().name;
+      
+      if ($this.data().name == correctName){
+        $this.css("background-color", "#263C21")
+        //flashMessage("Correct");
+        score += 1;
+        updateScore(score);
+        $thisParent.next().show();
+        
+        $this.parent().data().qn % 2 ? $thisParent.prependTo($('#complete-odd')) : $thisParent.prependTo($('#complete-even'));
+        uiEnabled = true;
+        
+      } else {
+        
+        //flashMessage("Wrong", "#3C2121");
+        updateScore(score);
+        $this.parent().children().each(function(ii, ell) {
+          $ell = $(ell);
+          if ($ell.data().name != correctName) {
+            $ell.hide();
+          } else {
+            $ell.css("background-color", "#3C2121");
+          }
+        });
+        
+        if (score > 80)
+          $('#final-score-congrats').text('What a boss!');
+        else if (score > 60)
+          $('#final-score-congrats').text('Wow!');
+        else if (score > 20)
+          $('#final-score-congrats').text('Nice!');
+        
+        $('#finalscore').appendTo($thisParent);
+          
+          
+          
+        sendScore(score, $this);
+        $('#finalscore').fadeIn('fast');
+        
+        
+        
+      }
+    }, function (err) {
+      flashMessage(err);
+      console.log(err);
+    });
+  }
+})
+
+$('#try-again').on('click', function(){
+  location.reload();
+})
+
+
+var updateScore = function(score){
+  $('#score, #final-score-number').text(score);
+}
+
+//I think these ended up looking stupid and not really working
+var flashMessage = function(message, color){
+  var color = (color === undefined) ? "#263C21" : color;
+  $('#answer-flash').css("color", color );
+  $('#answer-flash').text(message).fadeIn(200).delay(500).fadeOut(1100);
+}
+
+var sendScore = function(score, ell){
+  var scoreSet = {
+    'create_at': Firebase.ServerValue.TIMESTAMP,
+    'name': playerName, 
+    'score': score
+  }
+  if (ell.parent().data().qn == score){
+    if (score > 1) fbRoot.child("hired").child("results").push(scoreSet)
+  } else {
+    console.log('%c Something funny is going on...', 'font-size: 20px; color: #330000')
+  }
+}
+
+
+</script>
