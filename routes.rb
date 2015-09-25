@@ -34,9 +34,7 @@ end
 get '/play' do
   if params[:name]
     @name = params[:name].gsub(' ', '_')
-    #puts @name
     @questions = generateTest()
-    #puts $fb_root.get("/hired/results/#{@name}").body
     @highscore = $fb_root.get("/hired/results/#{@name}/score").body
 
     erb :play
@@ -77,6 +75,8 @@ end
 
 #Error 500
 error 500 do
+  $fb_root.push("/log/errors", {:error_message => request.env['sinatra.error'].to_s}.to_json)
+  $fb_root.push("/log/errors", env['sinatra.error'].message);
   erb :error
 end
 
