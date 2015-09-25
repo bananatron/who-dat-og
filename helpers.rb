@@ -21,9 +21,7 @@ def generateTest
   questions = []
   employees = getEmployees('hired')
   names = getNames('hired')
-  puts "!!!"
-  puts employees.class
-  puts employees.first.class
+
   employees.each do |id, employee|
     qq = employee
     qq['options'] = []

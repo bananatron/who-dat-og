@@ -60,7 +60,7 @@
   
   //Construct Trophy Message for Notice bar from fb object result
   var buildTrophyMessage = function(messageObj){
-    return messageObj.name + " just scored " + messageObj.score + "!"
+    return messageObj.name.replace("_", " ") + " just scored " + messageObj.score + "!"
   }
   
   //Set notice and display it

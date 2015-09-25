@@ -39,7 +39,7 @@
   
   if (fbRoot === undefined) var fbRoot = new Firebase("https://faces.firebaseio.com/");
   fbRoot.child('hired').child('results').on("child_added", function(snapChild) {
-    buildRow(snapChild.val().name, snapChild.val().score, snapChild.val().create_at);
+    buildRow(snapChild.val().name.replace("_"," "), snapChild.val().score, snapChild.val().create_at);
     $('.loader').remove();
     
   }, function (errorObject) {

@@ -39,11 +39,9 @@
 </div>
 
 
-
 <script>
-
-var playerName = "<%= @name.gsub('+', ' ') %>";
-
+var playerName = "<%= @name %>";
+var highScore = <%= @highscore || 0 %>
 var score = 0;
 var uiEnabled = true;
 
@@ -127,12 +125,12 @@ var sendScore = function(score, ell){
     'name': playerName, 
     'score': score
   }
+  
   if (ell.parent().data().qn == score){
-    if (score > 1) fbRoot.child("hired").child("results").push(scoreSet)
+    if (score > 1 && score > highScore) fbRoot.child("hired").child("results").child(playerName).set( scoreSet )
   } else {
     console.log('%c Something funny is going on...', 'font-size: 20px; color: #330000')
   }
 }
-
 
 </script>

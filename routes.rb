@@ -33,8 +33,12 @@ end
 #Get PLAY
 get '/play' do
   if params[:name]
-    @name = params[:name]
+    @name = params[:name].gsub(' ', '_')
+    #puts @name
     @questions = generateTest()
+    #puts $fb_root.get("/hired/results/#{@name}").body
+    @highscore = $fb_root.get("/hired/results/#{@name}/score").body
+
     erb :play
   else
     redirect '/'
@@ -71,19 +75,13 @@ post '/add' do
   redirect '/admin'
 end
 
-#Weird shit
-get '/lol' do 
-  @varlol = params
-  erb :playground
-end
-
-get '/sync' do 
-  syncHiredEmployees
-  redirect '/'
-end
-
-
 #Error 500
 error 500 do
   erb :error
+end
+
+#GET Sync
+get '/sync' do 
+  syncHiredEmployees
+  redirect '/'
 end
