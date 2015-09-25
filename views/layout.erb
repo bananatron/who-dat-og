@@ -52,7 +52,7 @@
   if (fbRoot === undefined) var fbRoot = new Firebase("https://faces.firebaseio.com/");
   
   //Listener for results
-  fbRoot.child('hired').child('results').limitToLast(1).on("child_added", function(snapChild) {
+  fbRoot.child('hired').child('results').on("child_changed", function(snapChild) {
     setNotice(buildTrophyMessage(snapChild.val()), "trophy");
   }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
