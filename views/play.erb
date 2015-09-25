@@ -40,8 +40,8 @@
 
 
 <script>
-var playerName = "<%= @name %>";
-var highScore = <%= @highscore || 0 %>
+var playerName = <%= @name || 'null' %>;
+var highScore = <%= @highscore || 0 %>;
 var score = 0;
 var uiEnabled = true;
 
