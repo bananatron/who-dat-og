@@ -5,8 +5,6 @@ GEM
     firebase (0.2.4)
       httpclient
       json
-    heroku-deflater (0.5.3)
-      rack (>= 1.4.5)
     httpclient (2.6.0.1)
     json (1.8.3)
     mini_portile (0.6.2)
@@ -27,7 +25,6 @@ PLATFORMS
 DEPENDENCIES
   digest
   firebase
-  heroku-deflater
   json
   nokogiri
   sinatra
