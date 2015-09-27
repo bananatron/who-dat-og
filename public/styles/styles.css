@@ -124,12 +124,14 @@ button:hover {
 #toon-faces {
   text-align: center;
   height: 270px;
+  
 }
 .toon-face {
   position: absolute;
   left: 0;
   right: 0;
   display: none;
+
 }
 
 .ui-autocomplete {
