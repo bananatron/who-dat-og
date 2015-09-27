@@ -11,6 +11,7 @@
   
   <div class="current-container">
     <% @questions.each_with_index do |employee, ii| %>
+      <% ii = "final" if @questions.last == employee %>
       <div class="question-container">
         <div class='who-photo'>
           <img src="<%= employee['image'] %>" />
@@ -56,19 +57,36 @@ $('.who-option').on('click', function(){
     fbRoot.child("hired").child("employees").child(iin).once('value', function (snap){
       var correctName = snap.val().name;
       
-      if ($this.data().name == correctName){
-        $this.css("background-color", "#263C21")
-        //flashMessage("Correct");
+      if ($this.data().name == correctName){ //Correct answer
+      
         score += 1;
         updateScore(score);
-        $thisParent.next().show();
+        $this.css("background-color", "#263C21");
         
-        $this.parent().data().qn % 2 ? $thisParent.prependTo($('#complete-odd')) : $thisParent.prependTo($('#complete-even'));
-        uiEnabled = true;
+        if ($this.parent().data().qn == "final") { //If this is the final person
+
+          $this.parent().children().each(function(ii, ell) {
+            $ell = $(ell);
+            if ($ell.data().name != correctName) {
+              $ell.hide();
+            } else {
+              $ell.css("background-color", "#263C21");
+            }
+          });
+          $('#final-score-congrats').text("That's all there is!");
+          $('#finalscore').appendTo($thisParent);
+          sendScore(score, $this);
+          $('#finalscore').fadeIn('fast');
+          
+        } else {
+          
+          $thisParent.next().show();
+          $this.parent().data().qn % 2 ? $thisParent.prependTo($('#complete-odd')) : $thisParent.prependTo($('#complete-even'));
+          uiEnabled = true;
+        }
         
-      } else {
+      } else { //Wrong answer
         
-        //flashMessage("Wrong", "#3C2121");
         updateScore(score);
         $this.parent().children().each(function(ii, ell) {
           $ell = $(ell);
@@ -126,7 +144,7 @@ var sendScore = function(score, ell){
     'score': score
   }
   
-  if (ell.parent().data().qn == score){
+  if (ell.parent().data().qn == score || ell.parent().data().qn == "final"){
     if (score > 1 && score > highScore) fbRoot.child("hired").child("results").child(playerName).set( scoreSet )
   } else {
     console.log('%c Something funny is going on...', 'font-size: 20px; color: #330000')
